@@ -26,6 +26,11 @@ import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.PluginResult;
 
+import android.util.Base64;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 
 public class IntentPlugin extends CordovaPlugin {
 
@@ -177,6 +182,7 @@ public class IntentPlugin extends CordovaPlugin {
             intentJSON.put("component", intent.getComponent());
             intentJSON.put("data", intent.getData());
             intentJSON.put("package", intent.getPackage());
+            intentJSON.put("stream", toBase64(intent));
 
             return intentJSON;
         } catch (JSONException e) {
@@ -184,6 +190,31 @@ public class IntentPlugin extends CordovaPlugin {
             Log.d(pluginName, e.getMessage());
             Log.d(pluginName, Arrays.toString(e.getStackTrace()));
 
+            return null;
+        }
+    }
+	 private String toBase64(Intent intent){
+        if (!intent.hasExtra(Intent.EXTRA_STREAM)){
+            return null;
+        }
+        try {
+            InputStream is = cordova.getActivity().getContentResolver().openInputStream((Uri)(intent.getExtras().get(Intent.EXTRA_STREAM)));
+            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            while(true){
+                byte[] data=new byte[1024*1024];
+                int l=is.read(data);
+                Log.d("data",""+l);
+                if(l<=0)
+                    break;
+                os.write(data,0,l);
+            }
+            is.close();
+            os.close();
+            String base64 = Base64.encodeToString(os.toByteArray(),Base64.DEFAULT);
+            Log.d("base64",base64);
+            return base64;
+        } catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }
