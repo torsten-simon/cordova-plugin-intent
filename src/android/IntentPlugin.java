@@ -203,7 +203,6 @@ public class IntentPlugin extends CordovaPlugin {
             while(true){
                 byte[] data=new byte[1024*1024];
                 int l=is.read(data);
-                Log.d("data",""+l);
                 if(l<=0)
                     break;
                 os.write(data,0,l);
@@ -211,7 +210,6 @@ public class IntentPlugin extends CordovaPlugin {
             is.close();
             os.close();
             String base64 = Base64.encodeToString(os.toByteArray(),Base64.DEFAULT);
-            Log.d("base64",base64);
             return base64;
         } catch (Throwable t) {
             t.printStackTrace();
