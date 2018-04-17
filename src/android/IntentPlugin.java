@@ -213,8 +213,8 @@ public class IntentPlugin extends CordovaPlugin {
             String base64 = Base64.encodeToString(os.toByteArray(),Base64.DEFAULT);
             Log.d("base64",base64);
             return base64;
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Throwable t) {
+            t.printStackTrace();
             return null;
         }
     }
