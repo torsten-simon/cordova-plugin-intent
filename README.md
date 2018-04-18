@@ -1,6 +1,8 @@
 # Cordova Plugin for accessing the Cordova Intent and handling onNewIntent (Android Only)
 
-__This plugin is not longer maintained.__
+__This plugin is an extended version of the original one from napolitano/cordova-plugin-intent.__
+It's main intention is to provide a base64 content stream of the content to allow easier access to shared data.
+Please note that this will load shared data into the memory and will not work for very large files. May use 'android:largeHeap="true"' in the manifest to improve the size constrains. However, the main intention is for regular image files or small documents.
 
 This plugin allows you to add functionality for receiving content sent from other apps. To enable receiving sent content add the following XML to the MainActivity section of your AndroidManifest.xml
 
