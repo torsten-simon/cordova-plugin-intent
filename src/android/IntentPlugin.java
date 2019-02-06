@@ -1,5 +1,6 @@
 package com.napolitano.cordova.plugin.intent;
 
+import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -78,6 +79,32 @@ public class IntentPlugin extends CordovaPlugin {
         Intent intent = cordova.getActivity().getIntent();
         context.sendPluginResult(new PluginResult(PluginResult.Status.OK, getIntentJson(intent)));
         return true;
+    }
+
+    /**
+     * open an app chooser for the given file path
+     *
+     * @param data
+     * @param context
+     */
+    public boolean showOpenWith (final JSONArray data, final CallbackContext context) {
+        if(data.length() != 0) {
+            context.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
+            return false;
+        }
+        try {
+            File file=new File(data.getString(0));
+            Intent target=new Intent(Intent.ACTION_VIEW,Uri.fromFile(file));
+            Intent intent = Intent.createChooser(target,"");
+            context.sendPluginResult(new PluginResult(PluginResult.Status.OK, getIntentJson(intent)));
+            return true;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            context.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
+            return false;
+        }
+
+
     }
 
     /**
