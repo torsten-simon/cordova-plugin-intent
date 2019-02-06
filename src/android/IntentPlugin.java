@@ -97,7 +97,7 @@ public class IntentPlugin extends CordovaPlugin {
             Intent target=new Intent(Intent.ACTION_VIEW);
             String mimetype=MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(file.getName()));
             target.setDataAndType(Uri.fromFile(file),mimetype);
-            Intent intent = Intent.createChooser(target,"");
+            Intent intent = Intent.createChooser(target,file.getName());
             cordova.getActivity().startActivity(intent);
             context.sendPluginResult(new PluginResult(PluginResult.Status.OK, getIntentJson(intent)));
             return true;
