@@ -25,7 +25,18 @@ IntentPlugin.prototype.setNewIntentHandler = function(method) {
         [method]
     );
 };
+IntentPlugin.prototype.showOpenWith = function(file, successCallback, failureCallback) {
+    'use strict'
 
+    cordova.exec (
+        successCallback,
+        failureCallback,
+        'IntentPlugin',
+        'showOpenWith',
+        [file]
+    );
+
+}
 IntentPlugin.prototype.getRealPathFromContentUrl = function(uri, successCallback, failureCallback) {
     'use strict'
 
