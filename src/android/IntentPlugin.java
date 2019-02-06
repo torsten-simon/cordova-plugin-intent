@@ -88,23 +88,24 @@ public class IntentPlugin extends CordovaPlugin {
      * @param context
      */
     public boolean showOpenWith (final JSONArray data, final CallbackContext context) {
-        if(data.length() != 0) {
+        if(data.length() != 1) {
             context.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
             return false;
         }
         try {
             File file=new File(data.getString(0));
-            Intent target=new Intent(Intent.ACTION_VIEW,Uri.fromFile(file));
+            Intent target=new Intent(Intent.ACTION_VIEW);
+            String mimetype=MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(file.getName()));
+            target.setDataAndType(Uri.fromFile(file),mimetype);
             Intent intent = Intent.createChooser(target,"");
+            cordova.getActivity().startActivity(intent);
             context.sendPluginResult(new PluginResult(PluginResult.Status.OK, getIntentJson(intent)));
             return true;
-        } catch (JSONException e) {
-            e.printStackTrace();
+        } catch (Throwable t) {
+            t.printStackTrace();
             context.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
             return false;
         }
-
-
     }
 
     /**
