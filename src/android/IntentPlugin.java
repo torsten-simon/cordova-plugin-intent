@@ -87,17 +87,21 @@ public class IntentPlugin extends CordovaPlugin {
      * @param data
      * @param context
      */
-    public boolean showOpenWith (final JSONArray data, final CallbackContext context) {
+    public boolean showOpenWith(final JSONArray data, final CallbackContext context) {
         if(data.length() != 1) {
             context.sendPluginResult(new PluginResult(PluginResult.Status.INVALID_ACTION));
             return false;
         }
         try {
-            File file=new File(data.getString(0));
+            String url=data.getString(0);
+            Uri uri=Uri.parse(url);
+            String name=uri.getLastPathSegment();
+            String extension=url.substring(url.lastIndexOf(".")+1).toLowerCase();
+            String mimetype=MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+            if(mimetype==null) mimetype="*/*";
             Intent target=new Intent(Intent.ACTION_VIEW);
-            String mimetype=MimeTypeMap.getSingleton().getMimeTypeFromExtension(MimeTypeMap.getFileExtensionFromUrl(file.getName()));
-            target.setDataAndType(Uri.fromFile(file),mimetype);
-            Intent intent = Intent.createChooser(target,file.getName());
+            target.setDataAndType(uri,mimetype);
+            Intent intent = Intent.createChooser(target,name);
             cordova.getActivity().startActivity(intent);
             context.sendPluginResult(new PluginResult(PluginResult.Status.OK, getIntentJson(intent)));
             return true;
