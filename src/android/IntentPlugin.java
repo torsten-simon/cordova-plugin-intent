@@ -94,6 +94,9 @@ public class IntentPlugin extends CordovaPlugin {
         }
         try {
             String url=data.getString(0);
+	    // prevent android.os.FileUriExposedException:
+	    if(url.startsWith('file://')) 
+		url=url.substring(7);
             Uri uri=Uri.parse(url);
             String name=uri.getLastPathSegment();
             String extension=url.substring(url.lastIndexOf(".")+1).toLowerCase();
