@@ -80,6 +80,15 @@ public class IntentPlugin extends CordovaPlugin {
         context.sendPluginResult(new PluginResult(PluginResult.Status.OK, getIntentJson(intent)));
         return true;
     }
+    /**
+     * Clears the last intent, basically means that it is consumed
+     *
+     */
+    public boolean clearIntent (final JSONArray data, final CallbackContext context) {
+      cordova.getActivity().setIntent(null);
+      context.sendPluginResult(new PluginResult(PluginResult.Status.OK));
+      return true;
+    }
 
     /**
      * open an app chooser for the given file path
@@ -95,7 +104,7 @@ public class IntentPlugin extends CordovaPlugin {
         try {
             String url=data.getString(0);
 	    // prevent android.os.FileUriExposedException:
-	    if(url.startsWith("file://")) 
+	    if(url.startsWith("file://"))
 		url=url.substring(7);
             Uri uri=Uri.parse(url);
             String name=uri.getLastPathSegment();
