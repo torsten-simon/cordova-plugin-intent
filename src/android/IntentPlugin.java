@@ -16,6 +16,7 @@ import android.content.ClipData;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Base64OutputStream;
 import android.util.Log;
 import android.net.Uri;
 
@@ -243,18 +244,20 @@ public class IntentPlugin extends CordovaPlugin {
         }
         try {
             InputStream is = cordova.getActivity().getContentResolver().openInputStream((Uri)(intent.getExtras().get(Intent.EXTRA_STREAM)));
-            ByteArrayOutputStream os = new ByteArrayOutputStream();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            Base64OutputStream os = new Base64OutputStream(bos, Base64.DEFAULT);
             while(true){
                 byte[] data=new byte[1024*1024];
                 int l=is.read(data);
                 if(l<=0)
                     break;
-                os.write(data,0,l);
+              os.write(
+                data, 0, l
+              );
             }
             is.close();
             os.close();
-            String base64 = Base64.encodeToString(os.toByteArray(),Base64.DEFAULT);
-            return base64;
+            return bos.toString();
         } catch (Throwable t) {
             t.printStackTrace();
             return null;
