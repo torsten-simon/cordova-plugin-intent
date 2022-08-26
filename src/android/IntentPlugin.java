@@ -6,16 +6,20 @@ import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
 
+import org.apache.cordova.CordovaActivity;
+import org.apache.cordova.CordovaInterfaceImpl;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.provider.MediaStore;
 import android.database.Cursor;
 import android.content.ClipData;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.OpenableColumns;
 import android.util.Base64OutputStream;
 import android.util.Log;
 import android.net.Uri;
@@ -167,6 +171,7 @@ public class IntentPlugin extends CordovaPlugin {
      * @param intent
      * @return
      */
+    @SuppressLint("Range")
     private JSONObject getIntentJson(Intent intent) {
         JSONObject intentJSON = null;
         ClipData clipData = null;
@@ -194,7 +199,13 @@ public class IntentPlugin extends CordovaPlugin {
                         if(item.getUri() != null) {
                             String type = cR.getType(item.getUri());
                             String extension = mime.getExtensionFromMimeType(cR.getType(item.getUri()));
-
+                            try (Cursor c=((CordovaInterfaceImpl)cordova).
+                              getActivity().getContentResolver().query(item.getUri(), null, null, null, null)
+                            ) {
+                              c.moveToFirst();
+                              items[i].put("file", c.getString(c.getColumnIndex(OpenableColumns.DISPLAY_NAME)));
+                            } catch (Throwable ignored) {
+                            }
                             items[i].put("type", type);
                             items[i].put("extension", extension);
                         }
